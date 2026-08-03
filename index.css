@@ -900,19 +900,28 @@ a { color: inherit; text-decoration: none; }
 /* ==========================================================================
    FOOTER
    ========================================================================== */
-.footer { padding: 120px 0 56px; position: relative; overflow: hidden; }
+.footer { padding: 0 0 28px; position: relative; overflow: hidden; }
 .footer__inner { text-align: center; position: relative; z-index: 1; }
 .footer__brand { margin-bottom: 44px; }
 .footer__brand-name { font-size: 22px; font-weight: 300; letter-spacing: 0.15em; color: var(--fg); line-height: 1; }
 .footer__brand-sub { font-size: 8px; font-weight: 400; letter-spacing: 0.3em; color: var(--fg3); margin-top: 5px; }
 .footer__title { font-size: clamp(40px, 5.5vw, 76px); font-weight: 700; letter-spacing: -0.04em; line-height: 0.95; margin-bottom: 24px; }
-.footer__text { font-size: 16px; color: var(--fg2); max-width: 520px; margin: 0 auto 48px; line-height: 1.8; }
+.footer__text { font-size: 16px; color: var(--fg2); max-width: 480px; margin: 0 auto 48px; line-height: 1.8; }
 
 .footer__bottom {
-  margin-top: 96px; padding-top: 28px;
+  margin-top: 96px;
+  padding-top: 28px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  display: flex; justify-content: space-between; align-items: center;
-  flex-wrap: wrap; gap: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.footer__bottom-mid {
+  font-size: 11px;
+  color: var(--fg3);
 }
 .footer__bottom-mid { font-size: 11px; color: var(--fg3); }
 
