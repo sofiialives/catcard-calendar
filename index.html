@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CatCard × Календарь публикаций</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+  <div class="starfield" aria-hidden="true">
+    <div class="star-layer star-layer--small"></div>
+    <div class="star-layer star-layer--medium"></div>
+    <div class="star-layer star-layer--colored"></div>
+    <span class="accent-star accent-star--blue" style="width:3px;height:3px;top:12%;left:18%"></span>
+    <span class="accent-star accent-star--purple" style="width:4px;height:4px;top:24%;left:72%;animation-delay:-0.8s"></span>
+    <span class="accent-star accent-star--blue" style="width:3px;height:3px;top:38%;left:44%;animation-delay:-2s"></span>
+    <span class="accent-star accent-star--purple" style="width:3px;height:3px;top:55%;left:9%;animation-delay:-1.4s"></span>
+    <span class="accent-star accent-star--blue" style="width:4px;height:4px;top:68%;left:82%;animation-delay:-2.6s"></span>
+    <span class="accent-star accent-star--purple" style="width:3px;height:3px;top:81%;left:29%;animation-delay:-0.4s"></span>
+    <span class="accent-star accent-star--blue" style="width:3px;height:3px;top:92%;left:61%;animation-delay:-1.8s"></span>
+    <span class="accent-star accent-star--purple" style="width:4px;height:4px;top:6%;left:52%;animation-delay:-3s"></span>
+  </div>
+
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-blob ambient-blob--1"></div>
+    <div class="ambient-blob ambient-blob--2"></div>
+    <div class="ambient-blob ambient-blob--3"></div>
+    <div class="ambient-blob ambient-blob--4"></div>
+  </div>
+
+  <div class="page">
+
+    <header class="header">
+      <div class="container header__inner">
+        <img src="./images/kometa.png" alt="KOMETA logo" class="header__brand-logo">
+        <div class="header__label">Календарь публикаций · 2026</div>
+        <div class="header__client">
+          <img src="./images/logo.svg" alt="CatCard" class="header__client-logo-mark">
+          <span class="header__client-name">CATCARD</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero hero--calendar">
+      <div class="hero__orb hero__orb--blue" aria-hidden="true"></div>
+      <div class="hero__orb hero__orb--purple" aria-hidden="true"></div>
+      <div class="circuit" aria-hidden="true">
+        <div class="circuit__line circuit__line--r" style="top:18%;right:0;width:18%"></div>
+        <div class="circuit__line circuit__line--r" style="top:36%;right:0;width:25%"></div>
+        <div class="circuit__line circuit__line--r" style="top:55%;right:0;width:32%"></div>
+        <div class="circuit__line circuit__line--r" style="top:73%;right:0;width:39%"></div>
+        <div class="circuit__line circuit__line--r" style="top:89%;right:0;width:46%"></div>
+        <div class="circuit__line circuit__line--l" style="top:22%;left:0;width:14%"></div>
+        <div class="circuit__line circuit__line--l" style="top:40%;left:0;width:19%"></div>
+        <div class="circuit__line circuit__line--l" style="top:58%;left:0;width:24%"></div>
+        <div class="circuit__line circuit__line--l" style="top:76%;left:0;width:29%"></div>
+        <div class="circuit__line circuit__line--l" style="top:92%;left:0;width:34%"></div>
+      </div>
+      <div class="particles" aria-hidden="true" id="particles"></div>
+
+      <div class="container hero__content">
+        <div class="reveal" data-delay="0">
+          <div class="pill"><span class="pill__dot"></span>KOMETA × CatCard</div>
+        </div>
+
+        <h1 class="hero__title reveal" data-delay="80">CATCARD</h1>
+        <h1 class="hero__title hero__title--gradient reveal" data-delay="140">Календарь публикаций</h1>
+
+        <div class="hero__divider reveal" data-delay="160">
+          <span class="hero__divider-line"></span>
+          <span class="glow-dot glow-dot--blue" style="--size:5px"></span>
+          <span class="hero__x">×</span>
+          <span class="glow-dot glow-dot--purple" style="--size:5px"></span>
+          <span class="hero__divider-line hero__divider-line--right"></span>
+        </div>
+
+        <p class="hero__text reveal" data-delay="260" style="font-style:italic">
+          Все запланированные посты и даты выхода — в одном месте
+        </p>
+
+        <div class="reveal" data-delay="400" style="margin-top:64px">
+          <button type="button" id="authButton" class="auth-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="11" width="14" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+            <span class="auth-btn__label">Войти как копирайтер</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="divider divider--abs-bottom"></div>
+    </section>
+
+    <!-- ============ CALENDAR ============ -->
+    <section class="section">
+      <div class="divider"></div>
+      <div class="container section__pad-top">
+
+        <div id="demoBanner" class="demo-banner" hidden>
+          Демо-режим — данные хранятся в этом браузере (localStorage), не синхронизируются между устройствами.
+          Настройте JSONBin в <code>config.js</code>, чтобы включить реальное общее хранилище.
+        </div>
+        <div id="calLoadError" class="cal-error" hidden></div>
+
+        <div class="cal-toolbar reveal" data-delay="0">
+          <div class="cal-toolbar__nav">
+            <button type="button" id="calPrev" class="cal-nav-btn" aria-label="Предыдущий месяц">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 6l-6 6 6 6" />
+              </svg>
+            </button>
+            <div class="cal-toolbar__labelwrap">
+              <div id="calMonthLabel" class="cal-toolbar__label">—</div>
+              <div id="calMonthCount" class="cal-toolbar__count">—</div>
+            </div>
+            <button type="button" id="calNext" class="cal-nav-btn" aria-label="Следующий месяц">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
+          <button type="button" id="calToday" class="cal-today-btn">Сегодня</button>
+        </div>
+
+        <div class="cal-legend-row reveal" data-delay="40">
+          <div id="calLegend" class="cal-legend"></div>
+          <button type="button" id="rubricsButton" class="rubrics-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 0 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 0 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1z" />
+            </svg>
+            Рубрики
+          </button>
+        </div>
+
+        <div id="calGrid" class="cal-grid reveal" data-delay="60"></div>
+
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="divider"></div>
+      <div class="bg-word" style="left:50%;transform:translate(-50%,-50%)">KOMETA</div>
+      <div class="container section__pad-top footer__inner">
+        <div class="reveal" data-delay="0">
+          <div class="footer__brand">
+            <div class="footer__brand-name">KOMETA</div>
+            <div class="footer__brand-sub">WEB3 AGENCY</div>
+          </div>
+          <h2 class="footer__title">Готовы<br>к запуску?</h2>
+          <p class="footer__text">
+            Календарь публикаций для CatCard. Копирайтер планирует посты, клиент видит расписание в реальном времени.
+          </p>
+        </div>
+
+        <div class="footer__bottom reveal" data-delay="200">
+          <div class="mono-caption">© 2026 KOMETA · WEB3 AGENCY</div>
+          <div class="footer__bottom-mid">Подготовлено для CatCard · Календарь публикаций</div>
+          <div class="mono-caption">KOMETA.WEB3</div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ============ MODAL: LOGIN ============ -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-box glass">
+      <button type="button" id="loginModalClose" class="modal-close" aria-label="Закрыть">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="mono-caption" style="margin-bottom:10px">Доступ копирайтера</div>
+      <h3 class="modal-title">Введите пароль</h3>
+      <form id="loginForm">
+        <input type="password" id="loginPasswordInput" class="modal-input" placeholder="Пароль" autocomplete="current-password" required>
+        <div id="loginError" class="modal-error" hidden>Неверный пароль.</div>
+        <button type="submit" class="modal-btn modal-btn--primary" style="margin-top:16px;width:100%">Войти</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: POST DETAIL (everyone) ============ -->
+  <div id="detailModal" class="modal-overlay">
+    <div class="modal-box glass">
+      <button type="button" id="detailModalClose" class="modal-close" aria-label="Закрыть">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="mono-caption" style="margin-bottom:10px">Публикация</div>
+      <h3 class="modal-title" id="detailTitle">—</h3>
+      <div class="detail-meta">
+        <div class="detail-meta__item">
+          <span class="detail-meta__label">Дата</span>
+          <span class="detail-meta__value" id="detailDate">—</span>
+        </div>
+        <div class="detail-meta__item">
+          <span class="detail-meta__label">Время</span>
+          <span class="detail-meta__value" id="detailTime">—</span>
+        </div>
+        <div class="detail-meta__item">
+          <span class="detail-meta__label">Тип</span>
+          <span class="detail-meta__value" id="detailType">—</span>
+        </div>
+        <div class="detail-meta__item">
+          <span class="detail-meta__label">Статус</span>
+          <span class="detail-meta__value" id="detailStatus">—</span>
+        </div>
+      </div>
+      <div id="detailDescRow" hidden style="margin-bottom:22px">
+        <span class="detail-meta__label">Описание</span>
+        <p class="detail-desc" id="detailDesc"></p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="detailEditBtn" class="modal-btn modal-btn--ghost" hidden>Редактировать</button>
+        <button type="button" id="detailDeleteBtn" class="modal-btn modal-btn--danger" hidden>Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: CREATE / EDIT POST (copywriter only) ============ -->
+  <div id="postModal" class="modal-overlay">
+    <div class="modal-box glass modal-box--wide">
+      <button type="button" id="postModalClose" class="modal-close" aria-label="Закрыть">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="mono-caption" style="margin-bottom:10px">Копирайтер</div>
+      <h3 class="modal-title" id="postModalTitle">Новый пост</h3>
+      <form id="postForm">
+        <div class="modal-row modal-row--title">
+          <div>
+            <label class="modal-label">Заголовок</label>
+            <input type="text" id="postTitleInput" class="modal-input" placeholder="Название поста">
+            <div class="modal-field-error" id="postTitleError" hidden>Заполните заголовок</div>
+          </div>
+          <div style="max-width:130px">
+            <label class="modal-label">Время</label>
+            <input type="time" id="postTimeInput" class="modal-input">
+            <div class="modal-field-error" id="postTimeError" hidden>Укажите время</div>
+          </div>
+        </div>
+
+        <label class="modal-label">Тип</label>
+        <div class="pill-select" id="postTypeSelect"></div>
+
+        <label class="modal-label">Описание</label>
+        <textarea id="postDescInput" class="modal-input modal-textarea" placeholder="О чём пост..." rows="4"></textarea>
+
+        <label class="modal-label">Статус</label>
+        <div class="pill-select">
+          <button type="button" class="status-pill" data-status="draft">Черновик</button>
+          <button type="button" class="status-pill" data-status="scheduled">Запланирован</button>
+          <button type="button" class="status-pill status-pill--published" data-status="published">Опубликован</button>
+        </div>
+
+        <div id="postFormError" class="modal-error" hidden></div>
+
+        <div class="modal-actions" style="margin-top:22px">
+          <button type="button" id="postDeleteBtn" class="modal-btn modal-btn--danger" hidden>Удалить</button>
+          <button type="button" id="postCancelBtn" class="modal-btn modal-btn--ghost">Отмена</button>
+          <button type="submit" class="modal-btn modal-btn--primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: RUBRICS ============ -->
+  <div id="rubricsModal" class="modal-overlay">
+    <div class="modal-box glass">
+      <button type="button" id="rubricsModalClose" class="modal-close" aria-label="Закрыть">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <div class="mono-caption" style="margin-bottom:10px">Типы постов</div>
+      <h3 class="modal-title">Рубрики</h3>
+
+      <div id="rubricsList" class="rubrics-list"></div>
+
+      <div id="rubricAddForm" class="rubric-add-form copywriter-only-block">
+        <label class="modal-label">Новая рубрика</label>
+        <div class="swatches" id="rubricColorSwatches"></div>
+        <input type="color" id="rubricCustomColorInput" style="position:absolute;width:0;height:0;opacity:0;pointer-events:none">
+        <input type="text" id="rubricNameInput" class="modal-input" placeholder="Название рубрики" style="margin-top:12px">
+        <div id="rubricAddError" class="modal-error" hidden></div>
+        <button type="button" id="rubricAddBtn" class="modal-btn modal-btn--primary" style="margin-top:14px;width:100%">+ Добавить рубрику</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL: CONFIRM (replaces window.confirm) ============ -->
+  <div id="confirmModal" class="modal-overlay">
+    <div class="modal-box glass modal-box--small">
+      <div class="confirm-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF8A96" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+        </svg>
+      </div>
+      <h3 class="modal-title">Вы уверены?</h3>
+      <p class="confirm-text" id="confirmText">—</p>
+      <div class="modal-actions">
+        <button type="button" id="confirmCancelBtn" class="modal-btn modal-btn--ghost">Отмена</button>
+        <button type="button" id="confirmOkBtn" class="modal-btn modal-btn--danger">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="busyOverlay" class="busy-overlay" aria-hidden="true">
+    <div class="busy-spinner"></div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+  <script src="calendar.js"></script>
+</body>
+
+</html>
