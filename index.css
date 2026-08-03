@@ -1685,7 +1685,6 @@ body.modal-open { overflow: hidden; }
   font-size: 10px; font-family: var(--mono); letter-spacing: 0.06em; text-transform: uppercase;
   color: var(--fg3); margin-bottom: 7px; margin-top: 16px;
 }
-.modal-label:first-of-type { margin-top: 0; }
 
 .modal-input {
   width: 100%;
@@ -1909,3 +1908,9 @@ body.is-busy .busy-overlay { opacity: 1; pointer-events: auto; }
   .modal-row--title > div:last-child { max-width: none !important; }
   .cal-legend-row { flex-direction: column; align-items: flex-start; }
 }
+
+#postForm {
+  gap: 22px;
+}
+
+.field-group { gap: 8px }
