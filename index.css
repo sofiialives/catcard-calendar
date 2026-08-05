@@ -1583,6 +1583,7 @@ body.is-copywriter .copywriter-only-block { display: block; }
 }
 .cal-cell {
   min-height: 120px;
+  min-width: 0;
   padding: 10px 10px 8px;
   border-radius: 16px;
   background: rgba(20, 19, 28, 0.5);
