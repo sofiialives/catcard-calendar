@@ -249,13 +249,19 @@
       <div class="mono-caption" style="margin-bottom:10px">Копирайтер</div>
       <h3 class="modal-title" id="postModalTitle">Новый пост</h3>
       <form id="postForm">
-        <div class="modal-row modal-row--title">
+        <div>
+          <label class="modal-label">Заголовок</label>
+          <input type="text" id="postTitleInput" class="modal-input" placeholder="Название поста">
+          <div class="modal-field-error" id="postTitleError" hidden>Заполните заголовок</div>
+        </div>
+
+        <div class="modal-row modal-row--datetime">
           <div>
-            <label class="modal-label">Заголовок</label>
-            <input type="text" id="postTitleInput" class="modal-input" placeholder="Название поста">
-            <div class="modal-field-error" id="postTitleError" hidden>Заполните заголовок</div>
+            <label class="modal-label">Дата</label>
+            <input type="date" id="postDateInput" class="modal-input">
+            <div class="modal-field-error" id="postDateError" hidden>Укажите дату</div>
           </div>
-          <div style="max-width:130px">
+          <div>
             <label class="modal-label">Время</label>
             <input type="time" id="postTimeInput" class="modal-input">
             <div class="modal-field-error" id="postTimeError" hidden>Укажите время</div>

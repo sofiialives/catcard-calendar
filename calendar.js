@@ -589,8 +589,10 @@
   }
   function clearFieldErrors() {
     document.getElementById("postTitleInput").classList.remove("modal-input--error");
+    document.getElementById("postDateInput").classList.remove("modal-input--error");
     document.getElementById("postTimeInput").classList.remove("modal-input--error");
     document.getElementById("postTitleError").hidden = true;
+    document.getElementById("postDateError").hidden = true;
     document.getElementById("postTimeError").hidden = true;
     document.getElementById("postFormError").hidden = true;
   }
@@ -606,6 +608,7 @@
     const [y, m, d] = dateStr.split("-").map(Number);
     document.getElementById("postModalTitle").textContent = "Новый пост · " + d + " " + RU_MONTHS[m - 1];
     document.getElementById("postTitleInput").value = "";
+    document.getElementById("postDateInput").value = dateStr;
     document.getElementById("postTimeInput").value = "12:00";
     document.getElementById("postDescInput").value = "";
     document.getElementById("postDeleteBtn").hidden = true;
@@ -624,6 +627,7 @@
     const [y, m, d] = post.date.split("-").map(Number);
     document.getElementById("postModalTitle").textContent = "Редактировать · " + d + " " + RU_MONTHS[m - 1];
     document.getElementById("postTitleInput").value = post.title;
+    document.getElementById("postDateInput").value = post.date;
     document.getElementById("postTimeInput").value = post.time;
     document.getElementById("postDescInput").value = post.description || "";
     document.getElementById("postDeleteBtn").hidden = false;
@@ -670,6 +674,7 @@
       clearFieldErrors();
 
       const title = document.getElementById("postTitleInput").value.trim();
+      const date = document.getElementById("postDateInput").value;
       const time = document.getElementById("postTimeInput").value;
       const description = document.getElementById("postDescInput").value.trim();
 
@@ -679,6 +684,11 @@
         document.getElementById("postTitleError").hidden = false;
         hasError = true;
       }
+      if (!date) {
+        document.getElementById("postDateInput").classList.add("modal-input--error");
+        document.getElementById("postDateError").hidden = false;
+        hasError = true;
+      }
       if (!time) {
         document.getElementById("postTimeInput").classList.add("modal-input--error");
         document.getElementById("postTimeError").hidden = false;
@@ -686,7 +696,6 @@
       }
       if (hasError) return;
 
-      const date = editingPostId ? posts.find((p) => p.id === editingPostId).date : pendingCellDate;
       const errEl = document.getElementById("postFormError");
 
       setBusy(true);
@@ -695,7 +704,7 @@
         if (editingPostId) {
           updated = posts.map((p) =>
             p.id === editingPostId
-              ? { ...p, title, time, description, typeId: selectedTypeId, status: selectedStatus }
+              ? { ...p, title, date, time, description, typeId: selectedTypeId, status: selectedStatus }
               : p
           );
         } else {
