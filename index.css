@@ -1634,6 +1634,16 @@ body.is-copywriter .copywriter-only-block { display: block; }
   .cal-cell { min-height: 90px; padding: 8px 6px 6px; border-radius: 12px; }
   .cal-weekday { font-size: 9px; }
   .cal-post-chip { font-size: 9.5px; padding: 3px 5px; }
+
+  /* до 42 ячеек с backdrop-filter одновременно на экране — на мобильном GPU это одна из
+     основных причин общей подлагивающей отрисовки/скролла. На мобильном/планшетном брейкпоинте
+     эффект стекла заменяем обычной полупрозрачной подложкой без блюра — визуально почти
+     незаметно на маленьких плитках, а нагрузка на кадр падает в разы. */
+  .cal-cell {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(20, 19, 28, 0.78);
+  }
 }
 @media (max-width: 640px) {
   .cal-cell__num { font-size: 11px; }
@@ -1649,17 +1659,28 @@ body.is-copywriter .copywriter-only-block { display: block; }
   background: rgba(8, 7, 12, 0.72);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  display: flex; align-items: center; justify-content: center;
+  /* было display:flex + align-items:center — в паре с overflow:auto это ломается в мобильных
+     браузерах (Safari/Chrome iOS и часть Android WebView): контент, который не влезает по высоте,
+     обрезается сверху/снизу и прокрутка к нему недоступна (overlay сам не скроллится, а у body
+     в это время overflow:hidden). Блочная раскладка с собственным скроллом работает везде одинаково. */
+  display: block;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 24px;
   opacity: 0; pointer-events: none;
   transition: opacity 0.2s ease;
 }
 .modal-overlay.is-open { opacity: 1; pointer-events: auto; }
-body.modal-open { overflow: hidden; }
+/* overflow:hidden на body не блокирует скролл/тач-эффект "резинки" под модалкой в iOS Safari —
+   добавляем touch-action, а самому overlay возвращаем его, чтобы скроллить можно было только
+   содержимое модалки, а не страницу под ней */
+body.modal-open { overflow: hidden; touch-action: none; }
+.modal-overlay { touch-action: auto; }
 
 .modal-box {
   position: relative;
   width: 100%; max-width: 440px;
+  margin: 24px auto; /* горизонтальное центрирование + отступы сверху/снизу внутри скроллящегося overlay */
   padding: 36px 32px;
   border-radius: 24px;
   background: rgba(20, 19, 28, 0.92);

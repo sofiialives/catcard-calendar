@@ -70,8 +70,16 @@
       var visible = Math.min(Math.max(vh * 0.7 - rect.top, 0), total);
       fill.style.height = (total ? (visible / total) * 100 : 0) + '%';
     }
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
+    // update() делает getBoundingClientRect() — принудительный layout. На «raw» scroll-событии
+    // (без throttle) это дёргалось на каждый пиксель скролла, что на мобильных особенно заметно
+    // лагом при прокрутке. Считаем не чаще одного раза за кадр.
+    var raf = 0;
+    function onScroll() {
+      if (raf) return;
+      raf = requestAnimationFrame(function () { raf = 0; update(); });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
     update();
   }
 

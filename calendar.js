@@ -119,11 +119,10 @@
       localStorage.setItem(LOCAL_KEY, JSON.stringify(seeded));
       return seeded;
     }
-    const res = await fetch(JSONBIN_BASE + "/latest", {
+    const res = await fetchWithRetry(JSONBIN_BASE + "/latest", {
       method: "GET",
       headers: { "X-Bin-Meta": "false" },
-    });
-    if (!res.ok) throw new Error("Не удалось загрузить календарь (" + res.status + ")");
+    }, "Не удалось загрузить календарь");
     const data = await res.json();
     return {
       posts: Array.isArray(data.posts) ? data.posts : [],
@@ -136,15 +135,52 @@
       localStorage.setItem(LOCAL_KEY, JSON.stringify(data));
       return;
     }
-    const res = await fetch(JSONBIN_BASE, {
+    await fetchWithRetry(JSONBIN_BASE, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "X-Master-Key": cfg.jsonbinMasterKey,
       },
       body: JSON.stringify(data),
-    });
-    if (!res.ok) throw new Error("Не удалось сохранить (" + res.status + ")");
+    }, "Не удалось сохранить");
+  }
+
+  // На мобильной сети запрос чаще обрывается/виснет (переход в фон, смена Wi-Fi/LTE) —
+  // без таймаута и повторной попытки это выглядит как «не сохранилось», хотя причина просто
+  // в оборванном соединении. Один повтор через паузу покрывает большинство таких случаев;
+  // таймаут не даёт запросу (и busy-оверлею) висеть бесконечно.
+  async function fetchWithRetry(url, options, errLabel, attempt = 1) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+    try {
+      const res = await fetch(url, { ...options, signal: controller.signal });
+      if (!res.ok) throw new Error(errLabel + " (" + res.status + ")");
+      return res;
+    } catch (err) {
+      if (attempt < 2) {
+        await new Promise((r) => setTimeout(r, 900));
+        return fetchWithRetry(url, options, errLabel, attempt + 1);
+      }
+      if (err.name === "AbortError") throw new Error(errLabel + " — не отвечает сеть, проверьте соединение");
+      throw err;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  // Любое изменение (создание/редактирование/удаление) сохраняло весь массив posts/rubrics,
+  // который был загружен в память при открытии страницы — а на телефоне вкладка часто висит
+  // открытой часами без перезагрузки. Если за это время кто-то поменял календарь с другого
+  // устройства, такое сохранение затирало его правки своей устаревшей копией — внешне это
+  // выглядит как «данные не сохранились» (на самом деле сохранились, но тут же перезаписаны).
+  // Поэтому перед записью всегда подтягиваем самое свежее состояние и применяем изменение к нему,
+  // а не к тому, что было в памяти.
+  async function withFreshData(mutate) {
+    const fresh = isConfigured ? await loadAll() : { posts, rubrics };
+    const result = mutate(fresh.posts, fresh.rubrics);
+    await saveAll(result);
+    posts = result.posts;
+    rubrics = result.rubrics;
   }
 
   // ==========================================================================
@@ -237,9 +273,10 @@
   async function doDeleteRubric(id) {
     setBusy(true);
     try {
-      const updatedRubrics = rubrics.filter((r) => r.id !== id);
-      await saveAll({ posts, rubrics: updatedRubrics });
-      rubrics = updatedRubrics;
+      await withFreshData((freshPosts, freshRubrics) => ({
+        posts: freshPosts,
+        rubrics: freshRubrics.filter((r) => r.id !== id),
+      }));
       renderLegend();
       renderRubricsModalList();
       render();
@@ -313,9 +350,10 @@
       setBusy(true);
       try {
         const newRubric = { id: uid(), name, color: selectedSwatch };
-        const updatedRubrics = [...rubrics, newRubric];
-        await saveAll({ posts, rubrics: updatedRubrics });
-        rubrics = updatedRubrics;
+        await withFreshData((freshPosts, freshRubrics) => ({
+          posts: freshPosts,
+          rubrics: [...freshRubrics, newRubric],
+        }));
         renderLegend();
         renderRubricsModalList();
         document.getElementById("rubricNameInput").value = "";
@@ -639,9 +677,10 @@
   async function doDelete(id) {
     setBusy(true);
     try {
-      const updated = posts.filter((p) => p.id !== id);
-      await saveAll({ posts: updated, rubrics });
-      posts = updated;
+      await withFreshData((freshPosts, freshRubrics) => ({
+        posts: freshPosts.filter((p) => p.id !== id),
+        rubrics: freshRubrics,
+      }));
       render();
       closeModal("postModal");
       closeModal("detailModal");
@@ -700,21 +739,22 @@
 
       setBusy(true);
       try {
-        let updated;
-        if (editingPostId) {
-          updated = posts.map((p) =>
-            p.id === editingPostId
-              ? { ...p, title, date, time, description, typeId: selectedTypeId, status: selectedStatus }
-              : p
-          );
-        } else {
-          updated = [...posts, {
-            id: uid(), title, date, time, description,
-            typeId: selectedTypeId, status: selectedStatus,
-          }];
-        }
-        await saveAll({ posts: updated, rubrics });
-        posts = updated;
+        await withFreshData((freshPosts, freshRubrics) => {
+          let updatedPosts;
+          if (editingPostId) {
+            updatedPosts = freshPosts.map((p) =>
+              p.id === editingPostId
+                ? { ...p, title, date, time, description, typeId: selectedTypeId, status: selectedStatus }
+                : p
+            );
+          } else {
+            updatedPosts = [...freshPosts, {
+              id: uid(), title, date, time, description,
+              typeId: selectedTypeId, status: selectedStatus,
+            }];
+          }
+          return { posts: updatedPosts, rubrics: freshRubrics };
+        });
         render();
         closeModal("postModal");
       } catch (err) {
